@@ -1,0 +1,19 @@
+route:
+  receiver: 'uba-alerts'
+  group_by: ['alertname', 'job']
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 3h
+
+receivers:
+- name: 'uba-alerts'
+  webhook_configs:
+  - url: 'http://alert-webhook:5000/alerts'
+    send_resolved: true
+
+inhibit_rules:
+- source_match:
+    severity: 'critical'
+  target_match:
+    severity: 'warning'
+  equal: ['alertname', 'job'] 

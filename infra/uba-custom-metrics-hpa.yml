@@ -1,0 +1,48 @@
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: uba-custom-metrics-hpa
+  namespace: uba-system
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: uba-backend
+  minReplicas: 3
+  maxReplicas: 15
+  metrics:
+  - type: Pods
+    pods:
+      metric:
+        name: requests_per_second
+      target:
+        type: AverageValue
+        averageValue: 1000
+  - type: Object
+    object:
+      metric:
+        name: active_sessions
+      describedObject:
+        apiVersion: v1
+        kind: Service
+        name: uba-backend
+      target:
+        type: Value
+        value: 500
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 300
+      policies:
+      - type: Percent
+        value: 30
+        periodSeconds: 60
+    scaleUp:
+      stabilizationWindowSeconds: 60
+      policies:
+      - type: Percent
+        value: 100
+        periodSeconds: 15
+      - type: Pods
+        value: 5
+        periodSeconds: 15
+      selectPolicy: Max 

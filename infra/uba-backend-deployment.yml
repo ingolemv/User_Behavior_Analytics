@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: uba-backend
+  labels:
+    app: uba
+    tier: backend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: uba
+      tier: backend
+  template:
+    metadata:
+      labels:
+        app: uba
+        tier: backend
+    spec:
+      containers:
+      - name: uba-backend
+        image: uba-backend:1.0.0
+        ports:
+        - containerPort: 8080
+        env:
+        - name: SPRING_DATASOURCE_URL
+          value: "jdbc:postgresql://uba-db:5432/uba"
+        - name: SPRING_DATASOURCE_USERNAME
+          value: "uba"
+        - name: SPRING_DATASOURCE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: uba-secrets
+              key: db_password
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1"
+        livenessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 5 

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: uba-frontend
+  labels:
+    app: uba
+    tier: frontend
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    app: uba
+    tier: frontend 

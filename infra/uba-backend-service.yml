@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: uba-backend
+  labels:
+    app: uba
+    tier: backend
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8080
+    targetPort: 8080
+  selector:
+    app: uba
+    tier: backend 

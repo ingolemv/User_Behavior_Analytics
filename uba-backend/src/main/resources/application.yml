@@ -1,0 +1,22 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/uba
+    username: postgres
+    password: password
+  jpa:
+    hibernate:
+      ddl-auto: update
+  kafka:
+    bootstrap-servers: localhost:9092
+
+elasticsearch:
+  host: localhost
+  port: 9200
+
+logging:
+  level:
+    root: INFO
+    com.uba: DEBUG 
